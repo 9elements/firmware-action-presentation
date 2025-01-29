@@ -1,0 +1,344 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Focus Beamer Presentation
+% LaTeX Template
+% Version 1.0 (8/8/18)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Pasquale Africa (https://github.com/elauksap/focus-beamertheme) with modifications by 
+% Vel (vel@LaTeXTemplates.com)
+%
+% Template license:
+% GNU GPL v3.0 License
+%
+% Important note:
+% The bibliography/references need to be compiled with bibtex.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\usetheme{focus} % Use the Focus theme supplied with the template
+% Add option [numbering=none] to disable the footer progress bar
+% Add option [numbering=fullbar] to show the footer progress bar as always full with a slide count
+
+% Uncomment to enable the ice-blue theme
+%\definecolor{main}{RGB}{92, 138, 168}
+%\definecolor{background}{RGB}{240, 247, 255}
+
+% Arch-blue: 23, 147, 209
+% Arch-gray: 77, 77, 77
+%\definecolor{main}{RGB}{23, 147, 209}
+%\definecolor{main}{RGB}{77, 77, 77}
+%\definecolor{background}{RGB}{240, 247, 255}
+
+%------------------------------------------------
+
+\usepackage{booktabs} % Required for better table rules
+\usepackage{relsize}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{forest}
+
+\definecolor{folderbg}{RGB}{124,166,198}
+\definecolor{folderborder}{RGB}{110,144,169}
+
+
+
+%----------------------------------------------------------------------------------------
+%	 TITLE SLIDE
+%----------------------------------------------------------------------------------------
+
+\title{firmware-action}
+
+\subtitle{Build firmware with ease (maybe)}
+
+\author{Vojtech Vesely\texorpdfstring{\\}{,}Marvin Drees}
+
+\titlegraphic{\includegraphics[width=0.4\textwidth,height=0.4\textheight,keepaspectratio]{images/9elements_logo_black.png}}
+
+\date{\today}
+
+\AtBeginSection[]{
+	\begin{frame}{Overview}
+		\tableofcontents[
+			currentsection,
+			sectionstyle=show/shaded,
+			subsectionstyle=show/show/hide
+		]
+	\end{frame}
+}
+
+\lstdefinestyle{yaml}{
+	basicstyle=\color{blue}\tiny,
+	rulecolor=\color{black},
+	string=[s]{'}{'},
+	stringstyle=\color{red},
+	comment=[l]{:},
+	commentstyle=\color{black},
+	%morecomment=[l]{-}
+}
+
+\lstdefinestyle{json}{
+		string=[s]{"}{"},
+		stringstyle=\color{blue},
+		comment=[l]{:},
+		commentstyle=\color{black},
+}
+
+
+%------------------------------------------------
+
+\begin{document}
+
+%------------------------------------------------
+
+\begin{frame}
+	\maketitle % Automatically created using the information in the commands above
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+%	 About
+%----------------------------------------------------------------------------------------
+
+\begin{frame}{About us}
+	\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\Large{Vojtech Vesely}\\
+		\small{DevOps}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\Large{Marvin Drees}\\
+		\small{Firmware Developer}
+	\end{minipage}
+	\end{figure}
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+%	 Table of contents
+%----------------------------------------------------------------------------------------
+
+\begin{frame}{Table of contents}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+%	 The pain
+%----------------------------------------------------------------------------------------
+
+\section{Building firmware is pain (why?)}
+
+\begin{frame}{Building firmware is pain (why?)}
+	\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		Problems
+		\begin{itemize}
+		\item{Multiple firmware options and combinations}
+			\begin{itemize}
+			\item{\textit{Intel FSP}}
+			\item{\textit{coreboot}}
+			\item{\textit{edk2}}
+			\item{\textit{linux}}
+			\item{\textit{uroot}}
+			\end{itemize}
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\begin{itemize}
+		\item{Multiple versions}
+			\begin{itemize}
+			\item{\textit{coreboot has right now \textbf{32 releases}}}
+			\item{\textit{edk2 has right now \textbf{29 releases} and 33 tags}}
+			\end{itemize}
+		\item{Multiple environments}
+			\begin{itemize}
+			\item{\textit{environment per version}}
+			\item{\textit{environment per OS}}
+			\end{itemize}
+		\end{itemize}
+	\end{minipage}
+	\end{figure}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+%	 The solution
+%----------------------------------------------------------------------------------------
+
+\section{firmware-action (what?)}
+
+\begin{frame}{firmware-action (what?)}
+	What it is?
+	\begin{itemize}
+	\item{\textbf{Makefile} or \textbf{Taskfile} but for firmware}
+	\end{itemize}
+	\vspace{20px}
+
+	Key features:
+	\begin{itemize}
+	\item{unified environment}
+	\item{build in CI/CD = build in local}
+	\item{written on Golang}
+	\item{GitHub action integration}
+	\item{AUR package for Arch Linux users}
+	\end{itemize}
+
+	\centering
+	\includegraphics[width=0.5\textwidth,height=0.5\textheight,keepaspectratio]{images/golang-logo.png}
+\end{frame}
+
+\begin{frame}{firmware-action (what?)}
+	\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		Before:
+		\vspace{20px}
+
+		\begin{tabular}{ |c|c| }
+			\hline
+			\textbf{CI} & \textbf{local} \\
+			\hline
+			\hline
+			build.yaml & build.sh \\
+			\hline
+			\multicolumn{2}{|c|}{code + config} \\
+			\hline
+		\end{tabular}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		After:
+		\vspace{20px}
+
+		\begin{tabular}{ |c| }
+			\hline
+			\textbf{CI \& local} \\
+			\hline
+			\hline
+			firmware-action + config \\
+			\hline
+			code + config \\
+			\hline
+		\end{tabular}
+	\end{minipage}
+	\end{figure}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+%	 dagger our savior
+%----------------------------------------------------------------------------------------
+
+\section{Docker + dagger (how?)}
+
+\subsection{What is Docker}
+\begin{frame}{What is Docker}
+	\begin{itemize}
+	\item{lightweight container}
+	\item{For example}
+		\begin{itemize}
+		\item{Ubuntu 20.04 ~~~~ \textit{(current: 24.10)}}
+		\item{nginx 1.18.0 ~~~~~~ \textit{(current: 1.27.2)}}
+		\item{PostgreSQL 12.20 ~ \textit{(current: 17.2)}}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\subsection{What is Dagger}
+\begin{frame}{What is Dagger}
+	\begin{figure}
+	\centering
+	\begin{minipage}{.5\textwidth}
+		\begin{itemize}
+		\item{docker orchestrator}
+		\item{programmable CI/CD engine}
+		\item{\url{docs.dagger.io}}
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		For example:
+		\begin{itemize}
+		\item{pull \textit{this} docker container}
+		\item{copy \textit{this} directory into container}
+		\item{run \textit{this} command in container}
+		\end{itemize}
+	\end{minipage}
+	\end{figure}
+\end{frame}
+
+
+
+%----------------------------------------------------------------------------------------
+%	 Example
+%----------------------------------------------------------------------------------------
+
+
+\section{Example}
+
+\begin{frame}{Example: JSON config}
+\lstinputlisting[style=json, basicstyle=\tiny]{firmware-action-example/coreboot-example.json}
+\end{frame}
+
+\begin{frame}{Example: GitHub YAML}
+\lstinputlisting[style=yaml]{firmware-action-example/.github/workflows/coreboot-example.yml}
+\end{frame}
+
+\begin{frame}{Example: Local execution}
+\lstinputlisting[basicstyle=\tiny]{code\_examples/workflow\_new.cmd}
+\end{frame}
+
+\begin{frame}{Example: Local execution: Taskfile}
+\lstinputlisting[style=yaml]{firmware-action-example/Taskfile.yml}
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+%	 Demo
+%----------------------------------------------------------------------------------------
+
+\section{Demo}
+\begin{frame}{Demo}
+	\begin{enumerate}
+	\item{Get firmware-action}
+		\begin{itemize}
+		\item{AUR}
+		\item{clone \url{https://github.com/9elements/firmware-action.git}}
+		\end{itemize}
+	\item{Clone firmware-action-example}
+		\begin{itemize}
+		\item{clone \url{https://github.com/9elements/firmware-action-example.git}}
+		\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+%	 Links and sources
+%----------------------------------------------------------------------------------------
+
+\section{Sources}
+\begin{frame}{Sources}
+	\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth,height=0.5\textheight,keepaspectratio]{images/firmware-action-qr.png}
+	\caption{Code: \url{github.com/9elements/firmware-action}}
+	\label{fig:link-firmware-action}
+	\end{figure}
+\end{frame}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
