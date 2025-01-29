@@ -1,0 +1,30 @@
+---
+version: '3'
+interval: 1000ms
+vars:
+  TEXFILE: 'firmware-action-presentation.tex'
+
+tasks:
+  build:
+    desc: Build PDF
+    cmds:
+      - pdflatex -synctex=1 -interaction=nonstopmode {{.TEXFILE}}
+      - pdflatex -synctex=1 -interaction=nonstopmode {{.TEXFILE}}
+
+  build-watch:
+    watch: true
+    sources:
+      - 'code_examples/**'
+      - 'images/**'
+      - '*.sty'
+      - '*.tex'
+      - '*.bib'
+    cmds:
+      - task: build
+
+  clean:
+    desc: Cleanup LaTeX mess
+    silent: true
+    cmds:
+      - for: ['.aux', '.cb', '.cb2', '.fls', '.fmt', '.fot', '.lb', '.lof', '.log', '.lot', '.out', '.toc', '.nav', '.snm', '.synctex.gz']
+        cmd: if [ -f *{{ .ITEM }} ]; then trash *{{ .ITEM }}; fi
